@@ -1,0 +1,15 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: Komoplane
+metadata:
+  name: komoplane
+  namespace: example-env
+spec:
+  clusterName: example-cluster
+  labels:
+    team: platform
+  namespace: komoplane
+  values:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi

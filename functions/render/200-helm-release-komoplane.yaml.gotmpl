@@ -1,0 +1,38 @@
+# code: language=yaml
+#
+# Helm release for komoplane
+#
+
+{{- $kp := $state.komoplane }}
+
+---
+apiVersion: helm.m.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: {{ $kp.releaseName }}
+  annotations:
+    {{ setResourceNameAnnotation "helm-release-komoplane" }}
+  labels: {{ $kp.labels | toJson }}
+spec:
+  managementPolicies: {{ $kp.managementPolicies | toJson }}
+  forProvider:
+    chart:
+      name: komoplane
+      repository: https://helm.komodor.com
+      version: 0.1.12
+    namespace: {{ $kp.namespace }}
+    {{- if $kp.overrideAllValues }}
+    values:
+      {{- toYaml $kp.overrideAllValues | nindent 6 }}
+    {{- else }}
+    values:
+      fullnameOverride: komoplane
+      nameOverride: komoplane
+      {{- if $kp.values }}
+      {{- toYaml $kp.values | nindent 6 }}
+      {{- end }}
+    {{- end }}
+  rollbackLimit: 3
+  providerConfigRef:
+    name: {{ $kp.providerConfigRef.name }}
+    kind: {{ $kp.providerConfigRef.kind }}
