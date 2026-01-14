@@ -113,6 +113,35 @@ _items = [
             ]
         }
     }
+
+    # ==========================================================================
+    # Test 4: Default namespace is komoplane
+    # ==========================================================================
+    metav1alpha1.CompositionTest {
+        metadata.name = "default-namespace-komoplane"
+        spec = {
+            compositionPath = "apis/komoplanes/composition.yaml"
+            xrdPath = "apis/komoplanes/definition.yaml"
+            timeoutSeconds = 60
+            validate = False
+            xr = {
+                apiVersion = "helm.hops.ops.com.ai/v1alpha1"
+                kind = "Komoplane"
+                metadata.name = "ns-test"
+                spec = {
+                    clusterName = "test-cluster"
+                }
+            }
+            assertResources = [
+                {
+                    apiVersion = "helm.m.crossplane.io/v1beta1"
+                    kind = "Release"
+                    metadata.name = "ns-test"
+                    spec.forProvider.namespace = "komoplane"
+                }
+            ]
+        }
+    }
 ]
 
 items = _items
